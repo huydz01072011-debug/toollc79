@@ -599,7 +599,7 @@ app.get('/dashboard', (req, res) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>ULTIMATE MACHINE | SIÊU DỰ ĐOÁN TÀI XỈU</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -610,7 +610,6 @@ app.get('/dashboard', (req, res) => {
             overflow-x: hidden;
         }
         
-        /* Animated Background */
         .cyber-grid {
             position: fixed;
             top: 0;
@@ -650,7 +649,6 @@ app.get('/dashboard', (req, res) => {
             padding: 20px;
         }
         
-        /* Header */
         .header {
             text-align: center;
             padding: 40px 20px;
@@ -692,7 +690,6 @@ app.get('/dashboard', (req, res) => {
             border: 1px solid rgba(0,255,255,0.3);
         }
         
-        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -729,7 +726,6 @@ app.get('/dashboard', (req, res) => {
             letter-spacing: 1px;
         }
         
-        /* Servers */
         .servers-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -791,7 +787,6 @@ app.get('/dashboard', (req, res) => {
         .win { color: #00ff88; }
         .loss { color: #ff4466; }
         
-        /* AI Stats */
         .ai-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -820,7 +815,6 @@ app.get('/dashboard', (req, res) => {
             letter-spacing: 1px;
         }
         
-        /* History */
         .history-section {
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
@@ -965,9 +959,9 @@ async function loadData() {
         const statsRes = await fetch('/stats');
         const stats = await statsRes.json();
         if(stats.success) {
-            document.getElementById('statsGrid').innerHTML = '<div class="stat-card"><div class="stat-value">30+</div><div class="stat-label">ALGORITHMS</div></div><div class="stat-card"><div class="stat-value">'+stats.hu.accuracy+'</div><div class="stat-label">HU ACC</div></div><div class="stat-card"><div class="stat-value">'+stats.md5.accuracy+'</div><div class="stat-label">MD5 ACC</div></div><div class="stat-card"><div class="stat-value">'+(parseInt(stats.hu.total)+parseInt(stats.md5.total))+'</div><div class="stat-label">TOTAL</div></div>';
+            document.getElementById('statsGrid').innerHTML = \`<div class="stat-card"><div class="stat-value">30+</div><div class="stat-label">ALGORITHMS</div></div><div class="stat-card"><div class="stat-value">\${stats.hu.accuracy}</div><div class="stat-label">HU ACC</div></div><div class="stat-card"><div class="stat-value">\${stats.md5.accuracy}</div><div class="stat-label">MD5 ACC</div></div><div class="stat-card"><div class="stat-value">\${(parseInt(stats.hu.total)+parseInt(stats.md5.total))}</div><div class="stat-label">TOTAL</div></div>\`;
             
-            document.getElementById('serversGrid').innerHTML = '<div class="server-card"><div class="server-title">HU SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartHu"></canvas><div class="percentage">'+stats.hu.accuracy+'</div></div><div class="stats-list"><div class="stat-row"><span>WINS</span><span class="win">'+stats.hu.wins+'</span></div><div class="stat-row"><span>LOSSES</span><span class="loss">'+stats.hu.losses+'</span></div><div class="stat-row"><span>STREAK</span><span>'+stats.hu.streak+'</span></div><div class="stat-row"><span>MAX STREAK</span><span>'+stats.hu.maxStreak+'</span></div></div></div></div><div class="server-card"><div class="server-title">MD5 SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartMd5"></canvas><div class="percentage">'+stats.md5.accuracy+'</div></div><div class="stats-list"><div class="stat-row"><span>WINS</span><span class="win">'+stats.md5.wins+'</span></div><div class="stat-row"><span>LOSSES</span><span class="loss">'+stats.md5.losses+'</span></div><div class="stat-row"><span>STREAK</span><span>'+stats.md5.streak+'</span></div><div class="stat-row"><span>MAX STREAK</span><span>'+stats.md5.maxStreak+'</span></div></div></div></div>';
+            document.getElementById('serversGrid').innerHTML = \`<div class="server-card"><div class="server-title">HU SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartHu"></canvas><div class="percentage">\${stats.hu.accuracy}</div></div><div class="stats-list"><div class="stat-row"><span>WINS</span><span class="win">\${stats.hu.wins}</span></div><div class="stat-row"><span>LOSSES</span><span class="loss">\${stats.hu.losses}</span></div><div class="stat-row"><span>STREAK</span><span>\${stats.hu.streak}</span></div><div class="stat-row"><span>MAX STREAK</span><span>\${stats.hu.maxStreak}</span></div></div></div></div><div class="server-card"><div class="server-title">MD5 SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartMd5"></canvas><div class="percentage">\${stats.md5.accuracy}</div></div><div class="stats-list"><div class="stat-row"><span>WINS</span><span class="win">\${stats.md5.wins}</span></div><div class="stat-row"><span>LOSSES</span><span class="loss">\${stats.md5.losses}</span></div><div class="stat-row"><span>STREAK</span><span>\${stats.md5.streak}</span></div><div class="stat-row"><span>MAX STREAK</span><span>\${stats.md5.maxStreak}</span></div></div></div></div>\`;
             
             if(charts.hu) charts.hu.destroy();
             if(charts.md5) charts.md5.destroy();
@@ -975,11 +969,11 @@ async function loadData() {
             charts.md5 = new Chart(document.getElementById('chartMd5'), { type: 'doughnut', data: { datasets: [{ data: [stats.md5.wins, stats.md5.losses || 1], backgroundColor: ['#00ff88', '#ff4466'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false } } } });
             
             if(stats.machine) {
-                document.getElementById('aiStats').innerHTML = '<div class="ai-card"><div class="ai-value">'+stats.machine.accuracy+'</div><div class="ai-label">AI ACCURACY</div></div><div class="ai-card"><div class="ai-value">'+stats.machine.recentAccuracy+'</div><div class="ai-label">RECENT ACC</div></div><div class="ai-card"><div class="ai-value">'+stats.machine.streak+'</div><div class="ai-label">CURRENT STREAK</div></div>';
+                document.getElementById('aiStats').innerHTML = \`<div class="ai-card"><div class="ai-value">\${stats.machine.accuracy}</div><div class="ai-label">AI ACCURACY</div></div><div class="ai-card"><div class="ai-value">\${stats.machine.recentAccuracy}</div><div class="ai-label">RECENT ACC</div></div><div class="ai-card"><div class="ai-value">\${stats.machine.streak}</div><div class="ai-label">CURRENT STREAK</div></div>\`;
             }
         }
         
-        const historyRes = await fetch(`/${currentTab}/history`);
+        const historyRes = await fetch('/' + currentTab + '/history');
         const historyData = await historyRes.json();
         const tbody = document.getElementById('historyBody');
         if(historyData.history && historyData.history.length > 0) {
