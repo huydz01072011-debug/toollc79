@@ -590,412 +590,431 @@ app.get('/reset', (req, res) => {
   res.json({ message: 'RESET COMPLETE' });
 });
 
-// ==================== GIAO DIỆN SIÊU ĐẸP ====================
+// ==================== GIAO DIỆN SIÊU ĐẸP (đã sửa lỗi template literal) ====================
 app.get('/dashboard', (req, res) => {
-  const html = `<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ULTIMATE MACHINE | SIÊU DỰ ĐOÁN TÀI XỈU</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #0a0a2a 50%, #000000 100%);
-            min-height: 100vh;
-            color: #fff;
-            overflow-x: hidden;
-        }
-        
-        .cyber-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-            animation: gridMove 20s linear infinite;
-        }
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(40px, 40px); }
-        }
-        
-        .glow {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, rgba(0,255,255,0.08) 0%, transparent 70%);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .container {
-            position: relative;
-            z-index: 10;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .header {
-            text-align: center;
-            padding: 40px 20px;
-            margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
-        }
-        .title {
-            font-family: 'Orbitron', monospace;
-            font-size: 52px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #fff, #00ffff, #ff00ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: titleGlow 3s ease-in-out infinite;
-        }
-        @keyframes titleGlow {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(0,255,255,0.5)); }
-            50% { filter: drop-shadow(0 0 30px rgba(255,0,255,0.8)); }
-        }
-        .subtitle {
-            font-size: 14px;
-            color: #00ffff;
-            margin-top: 16px;
-            letter-spacing: 3px;
-        }
-        .badge {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 6px 24px;
-            background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(255,0,255,0.1));
-            border-radius: 40px;
-            font-size: 12px;
-            font-family: monospace;
-            border: 1px solid rgba(0,255,255,0.3);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            transition: all 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: #00ffff;
-            box-shadow: 0 0 30px rgba(0,255,255,0.2);
-        }
-        .stat-value {
-            font-size: 44px;
-            font-weight: 800;
-            font-family: 'Orbitron', monospace;
-            background: linear-gradient(135deg, #fff, #00ffff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .stat-label {
-            font-size: 12px;
-            color: #8a95b0;
-            margin-top: 10px;
-            letter-spacing: 1px;
-        }
-        
-        .servers-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        .server-card {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 25px;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            transition: all 0.3s;
-        }
-        .server-card:hover {
-            border-color: #ff00ff;
-            transform: translateY(-4px);
-            box-shadow: 0 0 30px rgba(255,0,255,0.2);
-        }
-        .server-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #00ffff;
-            font-family: 'Orbitron', monospace;
-        }
-        .chart-container {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        .donut {
-            position: relative;
-            width: 140px;
-            height: 140px;
-        }
-        canvas {
-            width: 140px !important;
-            height: 140px !important;
-        }
-        .percentage {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 26px;
-            font-weight: 800;
-            font-family: 'Orbitron', monospace;
-            color: #00ffff;
-        }
-        .stats-list { flex: 1; }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-        }
-        .win { color: #00ff88; }
-        .loss { color: #ff4466; }
-        
-        .ai-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .ai-card {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 18px;
-            text-align: center;
-            border: 1px solid rgba(0, 255, 255, 0.15);
-        }
-        .ai-value {
-            font-size: 28px;
-            font-weight: 700;
-            font-family: 'Orbitron', monospace;
-            color: #00ffff;
-        }
-        .ai-label {
-            font-size: 10px;
-            color: #8a95b0;
-            margin-top: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .history-section {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-        }
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 25px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .tabs { display: flex; gap: 12px; }
-        .tab {
-            padding: 8px 28px;
-            background: transparent;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 40px;
-            color: #8a95b0;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        .tab.active {
-            background: linear-gradient(135deg, #00ffff, #ff00ff);
-            color: #000;
-            border-color: transparent;
-        }
-        .refresh-btn {
-            padding: 8px 28px;
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 40px;
-            color: #00ffff;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .refresh-btn:hover {
-            background: rgba(0, 255, 255, 0.2);
-            transform: scale(1.02);
-        }
-        .table-container {
-            overflow-x: auto;
-            max-height: 450px;
-            overflow-y: auto;
-        }
-        table { width: 100%; border-collapse: collapse; }
-        th {
-            padding: 15px;
-            text-align: left;
-            color: #00ffff;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-            font-family: monospace;
-        }
-        td {
-            padding: 13px 15px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.05);
-            font-size: 13px;
-        }
-        tr:hover td { background: rgba(0, 255, 255, 0.05); }
-        .method-tag {
-            background: rgba(0, 255, 255, 0.15);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-family: monospace;
-            display: inline-block;
-        }
-        .correct { color: #00ff88; font-weight: 600; }
-        .wrong { color: #ff4466; font-weight: 600; }
-        .pending { color: #ffaa00; }
-        
-        .footer {
-            text-align: center;
-            padding: 30px;
-            color: #5a6580;
-            font-size: 12px;
-            font-family: monospace;
-            border-top: 1px solid rgba(0, 255, 255, 0.1);
-            margin-top: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .servers-grid { grid-template-columns: 1fr; gap: 20px; }
-            .ai-stats { grid-template-columns: repeat(2, 1fr); }
-            .title { font-size: 32px; }
-            .stat-value { font-size: 32px; }
-        }
-        
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 255, 255, 0.05); }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #00ffff, #ff00ff); border-radius: 10px; }
-    </style>
-</head>
-<body>
-<div class="cyber-grid"></div>
-<div class="glow"></div>
-<div class="container">
-    <div class="header">
-        <div class="title">ULTIMATE MACHINE</div>
-        <div class="subtitle">⚡ SIÊU BỘ MÁY DỰ ĐOÁN THẾ HỆ MỚI ⚡</div>
-        <div class="badge">30+ ALGORITHMS | AI POWERED | QUANTUM READY</div>
-    </div>
-    
-    <div class="stats-grid" id="statsGrid"></div>
-    
-    <div class="servers-grid" id="serversGrid"></div>
-    
-    <div class="ai-stats" id="aiStats"></div>
-    
-    <div class="history-section">
-        <div class="history-header">
-            <div class="tabs"><button class="tab active" onclick="switchTab('hu')">HU SERVER</button><button class="tab" onclick="switchTab('md5')">MD5 SERVER</button></div>
-            <button class="refresh-btn" onclick="refreshData()">⟳ SYNC NOW</button>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr><th>SESSION</th><th>RESULT</th><th>PREDICTION</th><th>CONFIDENCE</th><th>METHOD</th><th>STATUS</th></tr>
-                </thead>
-                <tbody id="historyBody"><tr><td colspan="6" style="text-align:center;">LOADING...</td></tr></tbody>
-            </table>
-        </div>
-    </div>
-    
-    <div class="footer">© 2026 @AnhKhoi | ULTIMATE MACHINE v3.0 | 30+ ACTIVE ALGORITHMS | AI + DEEP LEARNING</div>
-</div>
-
-<script>
-let currentTab = 'hu', charts = {};
-
-async function loadData() {
-    try {
-        const statsRes = await fetch('/stats');
-        const stats = await statsRes.json();
-        if(stats.success) {
-            document.getElementById('statsGrid').innerHTML = \`<div class="stat-card"><div class="stat-value">30+</div><div class="stat-label">ALGORITHMS</div></div><div class="stat-card"><div class="stat-value">\${stats.hu.accuracy}</div><div class="stat-label">HU ACC</div></div><div class="stat-card"><div class="stat-value">\${stats.md5.accuracy}</div><div class="stat-label">MD5 ACC</div></div><div class="stat-card"><div class="stat-value">\${(parseInt(stats.hu.total)+parseInt(stats.md5.total))}</div><div class="stat-label">TOTAL</div></div>\`;
-            
-            document.getElementById('serversGrid').innerHTML = \`<div class="server-card"><div class="server-title">HU SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartHu"></canvas><div class="percentage">\${stats.hu.accuracy}</div></div><div class="stats-list"><div class="stat-row"><span>WINS</span><span class="win">\${stats.hu.wins}</span></div><div class="stat-row"><span>LOSSES</span><span class="loss">\${stats.hu.losses}</span></div><div class="stat-row"><span>STREAK</span><span>\${stats.hu.streak}</span></div><div class="stat-row"><span>MAX STREAK</span><span>\${stats.hu.maxStreak}</span></div></div></div></div><div class="server-card"><div class="server-title">MD5 SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartMd5"></canvas><div class="percentage">\${stats.md5.accuracy}</div></div><div class="stats-list"><div class="stat-row"><span>WINS</span><span class="win">\${stats.md5.wins}</span></div><div class="stat-row"><span>LOSSES</span><span class="loss">\${stats.md5.losses}</span></div><div class="stat-row"><span>STREAK</span><span>\${stats.md5.streak}</span></div><div class="stat-row"><span>MAX STREAK</span><span>\${stats.md5.maxStreak}</span></div></div></div></div>\`;
-            
-            if(charts.hu) charts.hu.destroy();
-            if(charts.md5) charts.md5.destroy();
-            charts.hu = new Chart(document.getElementById('chartHu'), { type: 'doughnut', data: { datasets: [{ data: [stats.hu.wins, stats.hu.losses || 1], backgroundColor: ['#00ff88', '#ff4466'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false } } } });
-            charts.md5 = new Chart(document.getElementById('chartMd5'), { type: 'doughnut', data: { datasets: [{ data: [stats.md5.wins, stats.md5.losses || 1], backgroundColor: ['#00ff88', '#ff4466'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { display: false } } } });
-            
-            if(stats.machine) {
-                document.getElementById('aiStats').innerHTML = \`<div class="ai-card"><div class="ai-value">\${stats.machine.accuracy}</div><div class="ai-label">AI ACCURACY</div></div><div class="ai-card"><div class="ai-value">\${stats.machine.recentAccuracy}</div><div class="ai-label">RECENT ACC</div></div><div class="ai-card"><div class="ai-value">\${stats.machine.streak}</div><div class="ai-label">CURRENT STREAK</div></div>\`;
-            }
-        }
-        
-        const historyRes = await fetch('/' + currentTab + '/history');
-        const historyData = await historyRes.json();
-        const tbody = document.getElementById('historyBody');
-        if(historyData.history && historyData.history.length > 0) {
-            tbody.innerHTML = historyData.history.slice(0, 30).map(h => {
-                let statusClass = '', statusText = '';
-                if(h.ket_qua_du_doan === 'DUNG') { statusClass = 'correct'; statusText = 'CORRECT'; }
-                else if(h.ket_qua_du_doan === 'SAI') { statusClass = 'wrong'; statusText = 'WRONG'; }
-                else { statusClass = 'pending'; statusText = 'PENDING'; }
-                return '<tr><td style="color:#00ffff;">#'+h.Phien+'</td><td class="'+(h.Ket_qua === 'Tài' ? 'loss' : 'win')+'">'+h.Ket_qua+'</td><td class="'+(h.Du_doan === 'Tài' ? 'loss' : 'win')+'">'+h.Du_doan+'</td><td style="color:#ffcc80;">'+h.Do_tin_cay+'</td><td><span class="method-tag">'+(h.Phuong_phap || 'AI')+'</span></td><td class="'+statusClass+'">'+statusText+'</td></tr>';
-            }).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">NO DATA</td></tr>';
-        }
-    } catch(e) { console.error(e); }
-}
-
-function switchTab(tab) { currentTab = tab; document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active')); event.target.classList.add('active'); loadData(); }
-async function refreshData() { await loadData(); }
-loadData(); setInterval(loadData, 5000);
-</script>
-</body>
-</html>`;
+  const html = '<!DOCTYPE html>\n' +
+'<html lang="vi">\n' +
+'<head>\n' +
+'    <meta charset="UTF-8">\n' +
+'    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">\n' +
+'    <title>ULTIMATE MACHINE | SIÊU DỰ ĐOÁN TÀI XỈU</title>\n' +
+'    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n' +
+'    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>\n' +
+'    <style>\n' +
+'        * { margin: 0; padding: 0; box-sizing: border-box; }\n' +
+'        body {\n' +
+'            font-family: \'Inter\', sans-serif;\n' +
+'            background: linear-gradient(135deg, #0a0a0a 0%, #0a0a2a 50%, #000000 100%);\n' +
+'            min-height: 100vh;\n' +
+'            color: #fff;\n' +
+'            overflow-x: hidden;\n' +
+'        }\n' +
+'        \n' +
+'        .cyber-grid {\n' +
+'            position: fixed;\n' +
+'            top: 0;\n' +
+'            left: 0;\n' +
+'            width: 100%;\n' +
+'            height: 100%;\n' +
+'            background-image: \n' +
+'                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),\n' +
+'                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);\n' +
+'            background-size: 40px 40px;\n' +
+'            pointer-events: none;\n' +
+'            z-index: 0;\n' +
+'            animation: gridMove 20s linear infinite;\n' +
+'        }\n' +
+'        @keyframes gridMove {\n' +
+'            0% { transform: translate(0, 0); }\n' +
+'            100% { transform: translate(40px, 40px); }\n' +
+'        }\n' +
+'        \n' +
+'        .glow {\n' +
+'            position: fixed;\n' +
+'            top: 50%;\n' +
+'            left: 50%;\n' +
+'            width: 100%;\n' +
+'            height: 100%;\n' +
+'            background: radial-gradient(circle at center, rgba(0,255,255,0.08) 0%, transparent 70%);\n' +
+'            transform: translate(-50%, -50%);\n' +
+'            pointer-events: none;\n' +
+'            z-index: 0;\n' +
+'        }\n' +
+'        \n' +
+'        .container {\n' +
+'            position: relative;\n' +
+'            z-index: 10;\n' +
+'            max-width: 1400px;\n' +
+'            margin: 0 auto;\n' +
+'            padding: 20px;\n' +
+'        }\n' +
+'        \n' +
+'        .header {\n' +
+'            text-align: center;\n' +
+'            padding: 40px 20px;\n' +
+'            margin-bottom: 30px;\n' +
+'            background: rgba(0, 0, 0, 0.5);\n' +
+'            backdrop-filter: blur(20px);\n' +
+'            border-radius: 30px;\n' +
+'            border: 1px solid rgba(0, 255, 255, 0.3);\n' +
+'            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);\n' +
+'        }\n' +
+'        .title {\n' +
+'            font-family: \'Orbitron\', monospace;\n' +
+'            font-size: 52px;\n' +
+'            font-weight: 900;\n' +
+'            background: linear-gradient(135deg, #fff, #00ffff, #ff00ff);\n' +
+'            -webkit-background-clip: text;\n' +
+'            background-clip: text;\n' +
+'            color: transparent;\n' +
+'            animation: titleGlow 3s ease-in-out infinite;\n' +
+'        }\n' +
+'        @keyframes titleGlow {\n' +
+'            0%, 100% { filter: drop-shadow(0 0 10px rgba(0,255,255,0.5)); }\n' +
+'            50% { filter: drop-shadow(0 0 30px rgba(255,0,255,0.8)); }\n' +
+'        }\n' +
+'        .subtitle {\n' +
+'            font-size: 14px;\n' +
+'            color: #00ffff;\n' +
+'            margin-top: 16px;\n' +
+'            letter-spacing: 3px;\n' +
+'        }\n' +
+'        .badge {\n' +
+'            display: inline-block;\n' +
+'            margin-top: 20px;\n' +
+'            padding: 6px 24px;\n' +
+'            background: linear-gradient(135deg, rgba(0,255,255,0.1), rgba(255,0,255,0.1));\n' +
+'            border-radius: 40px;\n' +
+'            font-size: 12px;\n' +
+'            font-family: monospace;\n' +
+'            border: 1px solid rgba(0,255,255,0.3);\n' +
+'        }\n' +
+'        \n' +
+'        .stats-grid {\n' +
+'            display: grid;\n' +
+'            grid-template-columns: repeat(4, 1fr);\n' +
+'            gap: 20px;\n' +
+'            margin-bottom: 30px;\n' +
+'        }\n' +
+'        .stat-card {\n' +
+'            background: rgba(0, 0, 0, 0.5);\n' +
+'            backdrop-filter: blur(10px);\n' +
+'            border-radius: 20px;\n' +
+'            padding: 25px;\n' +
+'            text-align: center;\n' +
+'            border: 1px solid rgba(0, 255, 255, 0.2);\n' +
+'            transition: all 0.3s;\n' +
+'        }\n' +
+'        .stat-card:hover {\n' +
+'            transform: translateY(-5px);\n' +
+'            border-color: #00ffff;\n' +
+'            box-shadow: 0 0 30px rgba(0,255,255,0.2);\n' +
+'        }\n' +
+'        .stat-value {\n' +
+'            font-size: 44px;\n' +
+'            font-weight: 800;\n' +
+'            font-family: \'Orbitron\', monospace;\n' +
+'            background: linear-gradient(135deg, #fff, #00ffff);\n' +
+'            -webkit-background-clip: text;\n' +
+'            background-clip: text;\n' +
+'            color: transparent;\n' +
+'        }\n' +
+'        .stat-label {\n' +
+'            font-size: 12px;\n' +
+'            color: #8a95b0;\n' +
+'            margin-top: 10px;\n' +
+'            letter-spacing: 1px;\n' +
+'        }\n' +
+'        \n' +
+'        .servers-grid {\n' +
+'            display: grid;\n' +
+'            grid-template-columns: repeat(2, 1fr);\n' +
+'            gap: 25px;\n' +
+'            margin-bottom: 30px;\n' +
+'        }\n' +
+'        .server-card {\n' +
+'            background: rgba(0, 0, 0, 0.5);\n' +
+'            backdrop-filter: blur(10px);\n' +
+'            border-radius: 24px;\n' +
+'            padding: 25px;\n' +
+'            border: 1px solid rgba(0, 255, 255, 0.2);\n' +
+'            transition: all 0.3s;\n' +
+'        }\n' +
+'        .server-card:hover {\n' +
+'            border-color: #ff00ff;\n' +
+'            transform: translateY(-4px);\n' +
+'            box-shadow: 0 0 30px rgba(255,0,255,0.2);\n' +
+'        }\n' +
+'        .server-title {\n' +
+'            font-size: 20px;\n' +
+'            font-weight: 700;\n' +
+'            margin-bottom: 20px;\n' +
+'            color: #00ffff;\n' +
+'            font-family: \'Orbitron\', monospace;\n' +
+'        }\n' +
+'        .chart-container {\n' +
+'            display: flex;\n' +
+'            align-items: center;\n' +
+'            gap: 30px;\n' +
+'            flex-wrap: wrap;\n' +
+'        }\n' +
+'        .donut {\n' +
+'            position: relative;\n' +
+'            width: 140px;\n' +
+'            height: 140px;\n' +
+'        }\n' +
+'        canvas {\n' +
+'            width: 140px !important;\n' +
+'            height: 140px !important;\n' +
+'        }\n' +
+'        .percentage {\n' +
+'            position: absolute;\n' +
+'            top: 50%;\n' +
+'            left: 50%;\n' +
+'            transform: translate(-50%, -50%);\n' +
+'            font-size: 26px;\n' +
+'            font-weight: 800;\n' +
+'            font-family: \'Orbitron\', monospace;\n' +
+'            color: #00ffff;\n' +
+'        }\n' +
+'        .stats-list { flex: 1; }\n' +
+'        .stat-row {\n' +
+'            display: flex;\n' +
+'            justify-content: space-between;\n' +
+'            padding: 12px 0;\n' +
+'            border-bottom: 1px solid rgba(0, 255, 255, 0.1);\n' +
+'        }\n' +
+'        .win { color: #00ff88; }\n' +
+'        .loss { color: #ff4466; }\n' +
+'        \n' +
+'        .ai-stats {\n' +
+'            display: grid;\n' +
+'            grid-template-columns: repeat(3, 1fr);\n' +
+'            gap: 15px;\n' +
+'            margin-bottom: 30px;\n' +
+'        }\n' +
+'        .ai-card {\n' +
+'            background: rgba(0, 0, 0, 0.5);\n' +
+'            backdrop-filter: blur(10px);\n' +
+'            border-radius: 16px;\n' +
+'            padding: 18px;\n' +
+'            text-align: center;\n' +
+'            border: 1px solid rgba(0, 255, 255, 0.15);\n' +
+'        }\n' +
+'        .ai-value {\n' +
+'            font-size: 28px;\n' +
+'            font-weight: 700;\n' +
+'            font-family: \'Orbitron\', monospace;\n' +
+'            color: #00ffff;\n' +
+'        }\n' +
+'        .ai-label {\n' +
+'            font-size: 10px;\n' +
+'            color: #8a95b0;\n' +
+'            margin-top: 8px;\n' +
+'            text-transform: uppercase;\n' +
+'            letter-spacing: 1px;\n' +
+'        }\n' +
+'        \n' +
+'        .history-section {\n' +
+'            background: rgba(0, 0, 0, 0.5);\n' +
+'            backdrop-filter: blur(10px);\n' +
+'            border-radius: 24px;\n' +
+'            overflow: hidden;\n' +
+'            border: 1px solid rgba(0, 255, 255, 0.2);\n' +
+'        }\n' +
+'        .history-header {\n' +
+'            display: flex;\n' +
+'            justify-content: space-between;\n' +
+'            align-items: center;\n' +
+'            padding: 18px 25px;\n' +
+'            border-bottom: 1px solid rgba(0, 255, 255, 0.1);\n' +
+'            flex-wrap: wrap;\n' +
+'            gap: 15px;\n' +
+'        }\n' +
+'        .tabs { display: flex; gap: 12px; }\n' +
+'        .tab {\n' +
+'            padding: 8px 28px;\n' +
+'            background: transparent;\n' +
+'            border: 1px solid rgba(0, 255, 255, 0.3);\n' +
+'            border-radius: 40px;\n' +
+'            color: #8a95b0;\n' +
+'            cursor: pointer;\n' +
+'            transition: all 0.3s;\n' +
+'            font-weight: 500;\n' +
+'        }\n' +
+'        .tab.active {\n' +
+'            background: linear-gradient(135deg, #00ffff, #ff00ff);\n' +
+'            color: #000;\n' +
+'            border-color: transparent;\n' +
+'        }\n' +
+'        .refresh-btn {\n' +
+'            padding: 8px 28px;\n' +
+'            background: rgba(0, 255, 255, 0.1);\n' +
+'            border: 1px solid rgba(0, 255, 255, 0.3);\n' +
+'            border-radius: 40px;\n' +
+'            color: #00ffff;\n' +
+'            cursor: pointer;\n' +
+'            transition: all 0.3s;\n' +
+'        }\n' +
+'        .refresh-btn:hover {\n' +
+'            background: rgba(0, 255, 255, 0.2);\n' +
+'            transform: scale(1.02);\n' +
+'        }\n' +
+'        .table-container {\n' +
+'            overflow-x: auto;\n' +
+'            max-height: 450px;\n' +
+'            overflow-y: auto;\n' +
+'        }\n' +
+'        table { width: 100%; border-collapse: collapse; }\n' +
+'        th {\n' +
+'            padding: 15px;\n' +
+'            text-align: left;\n' +
+'            color: #00ffff;\n' +
+'            font-size: 11px;\n' +
+'            font-weight: 600;\n' +
+'            letter-spacing: 1px;\n' +
+'            border-bottom: 1px solid rgba(0, 255, 255, 0.1);\n' +
+'            font-family: monospace;\n' +
+'        }\n' +
+'        td {\n' +
+'            padding: 13px 15px;\n' +
+'            border-bottom: 1px solid rgba(0, 255, 255, 0.05);\n' +
+'            font-size: 13px;\n' +
+'        }\n' +
+'        tr:hover td { background: rgba(0, 255, 255, 0.05); }\n' +
+'        .method-tag {\n' +
+'            background: rgba(0, 255, 255, 0.15);\n' +
+'            padding: 4px 12px;\n' +
+'            border-radius: 20px;\n' +
+'            font-size: 11px;\n' +
+'            font-family: monospace;\n' +
+'            display: inline-block;\n' +
+'        }\n' +
+'        .correct { color: #00ff88; font-weight: 600; }\n' +
+'        .wrong { color: #ff4466; font-weight: 600; }\n' +
+'        .pending { color: #ffaa00; }\n' +
+'        \n' +
+'        .footer {\n' +
+'            text-align: center;\n' +
+'            padding: 30px;\n' +
+'            color: #5a6580;\n' +
+'            font-size: 12px;\n' +
+'            font-family: monospace;\n' +
+'            border-top: 1px solid rgba(0, 255, 255, 0.1);\n' +
+'            margin-top: 30px;\n' +
+'        }\n' +
+'        \n' +
+'        @media (max-width: 768px) {\n' +
+'            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }\n' +
+'            .servers-grid { grid-template-columns: 1fr; gap: 20px; }\n' +
+'            .ai-stats { grid-template-columns: repeat(2, 1fr); }\n' +
+'            .title { font-size: 32px; }\n' +
+'            .stat-value { font-size: 32px; }\n' +
+'        }\n' +
+'        \n' +
+'        ::-webkit-scrollbar { width: 4px; height: 4px; }\n' +
+'        ::-webkit-scrollbar-track { background: rgba(0, 255, 255, 0.05); }\n' +
+'        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #00ffff, #ff00ff); border-radius: 10px; }\n' +
+'    </style>\n' +
+'</head>\n' +
+'<body>\n' +
+'<div class="cyber-grid"></div>\n' +
+'<div class="glow"></div>\n' +
+'<div class="container">\n' +
+'    <div class="header">\n' +
+'        <div class="title">ULTIMATE MACHINE</div>\n' +
+'        <div class="subtitle">⚡ SIÊU BỘ MÁY DỰ ĐOÁN THẾ HỆ MỚI ⚡</div>\n' +
+'        <div class="badge">30+ ALGORITHMS | AI POWERED | QUANTUM READY</div>\n' +
+'    </div>\n' +
+'    \n' +
+'    <div class="stats-grid" id="statsGrid"></div>\n' +
+'    \n' +
+'    <div class="servers-grid" id="serversGrid"></div>\n' +
+'    \n' +
+'    <div class="ai-stats" id="aiStats"></div>\n' +
+'    \n' +
+'    <div class="history-section">\n' +
+'        <div class="history-header">\n' +
+'            <div class="tabs"><button class="tab active" onclick="switchTab(\'hu\')">HU SERVER</button><button class="tab" onclick="switchTab(\'md5\')">MD5 SERVER</button></div>\n' +
+'            <button class="refresh-btn" onclick="refreshData()">⟳ SYNC NOW</button>\n' +
+'        </div>\n' +
+'        <div class="table-container">\n' +
+'            <table>\n' +
+'                <thead>\n' +
+'                    <tr><th>SESSION</th><th>RESULT</th><th>PREDICTION</th><th>CONFIDENCE</th><th>METHOD</th><th>STATUS</th></tr>\n' +
+'                </thead>\n' +
+'                <tbody id="historyBody"><tr><td colspan="6" style="text-align:center;">LOADING...</td></tr></tbody>\n' +
+'            </table>\n' +
+'        </div>\n' +
+'    </div>\n' +
+'    \n' +
+'    <div class="footer">© 2026 @AnhKhoi | ULTIMATE MACHINE v3.0 | 30+ ACTIVE ALGORITHMS | AI + DEEP LEARNING</div>\n' +
+'</div>\n' +
+'\n' +
+'<script>\n' +
+'let currentTab = "hu", charts = {};\n' +
+'\n' +
+'async function loadData() {\n' +
+'    try {\n' +
+'        const statsRes = await fetch("/stats");\n' +
+'        const stats = await statsRes.json();\n' +
+'        if(stats.success) {\n' +
+'            document.getElementById("statsGrid").innerHTML = ' +
+'\'<div class="stat-card"><div class="stat-value">30+</div><div class="stat-label">ALGORITHMS</div></div>\' + ' +
+'\'<div class="stat-card"><div class="stat-value">\' + stats.hu.accuracy + \'</div><div class="stat-label">HU ACC</div></div>\' + ' +
+'\'<div class="stat-card"><div class="stat-value">\' + stats.md5.accuracy + \'</div><div class="stat-label">MD5 ACC</div></div>\' + ' +
+'\'<div class="stat-card"><div class="stat-value">\' + (parseInt(stats.hu.total)+parseInt(stats.md5.total)) + \'</div><div class="stat-label">TOTAL</div></div>\';\n' +
+'            \n' +
+'            document.getElementById("serversGrid").innerHTML = ' +
+'\'<div class="server-card"><div class="server-title">HU SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartHu"></canvas><div class="percentage">\' + stats.hu.accuracy + \'</div></div><div class="stats-list">' +
+'\'<div class="stat-row"><span>WINS</span><span class="win">\' + stats.hu.wins + \'</span></div>\' + ' +
+'\'<div class="stat-row"><span>LOSSES</span><span class="loss">\' + stats.hu.losses + \'</span></div>\' + ' +
+'\'<div class="stat-row"><span>STREAK</span><span>\' + stats.hu.streak + \'</span></div>\' + ' +
+'\'<div class="stat-row"><span>MAX STREAK</span><span>\' + stats.hu.maxStreak + \'</span></div>\' + ' +
+'\'</div></div></div>\' + ' +
+'\'<div class="server-card"><div class="server-title">MD5 SERVER</div><div class="chart-container"><div class="donut"><canvas id="chartMd5"></canvas><div class="percentage">\' + stats.md5.accuracy + \'</div></div><div class="stats-list">\' + ' +
+'\'<div class="stat-row"><span>WINS</span><span class="win">\' + stats.md5.wins + \'</span></div>\' + ' +
+'\'<div class="stat-row"><span>LOSSES</span><span class="loss">\' + stats.md5.losses + \'</span></div>\' + ' +
+'\'<div class="stat-row"><span>STREAK</span><span>\' + stats.md5.streak + \'</span></div>\' + ' +
+'\'<div class="stat-row"><span>MAX STREAK</span><span>\' + stats.md5.maxStreak + \'</span></div>\' + ' +
+'\'</div></div></div>\';\n' +
+'            \n' +
+'            if(charts.hu) charts.hu.destroy();\n' +
+'            if(charts.md5) charts.md5.destroy();\n' +
+'            charts.hu = new Chart(document.getElementById("chartHu"), { type: "doughnut", data: { datasets: [{ data: [stats.hu.wins, stats.hu.losses || 1], backgroundColor: ["#00ff88", "#ff4466"], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "65%", plugins: { legend: { display: false } } } });\n' +
+'            charts.md5 = new Chart(document.getElementById("chartMd5"), { type: "doughnut", data: { datasets: [{ data: [stats.md5.wins, stats.md5.losses || 1], backgroundColor: ["#00ff88", "#ff4466"], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "65%", plugins: { legend: { display: false } } } });\n' +
+'            \n' +
+'            if(stats.machine) {\n' +
+'                document.getElementById("aiStats").innerHTML = ' +
+'\'<div class="ai-card"><div class="ai-value">\' + stats.machine.accuracy + \'</div><div class="ai-label">AI ACCURACY</div></div>\' + ' +
+'\'<div class="ai-card"><div class="ai-value">\' + stats.machine.recentAccuracy + \'</div><div class="ai-label">RECENT ACC</div></div>\' + ' +
+'\'<div class="ai-card"><div class="ai-value">\' + stats.machine.streak + \'</div><div class="ai-label">CURRENT STREAK</div></div>\';\n' +
+'            }\n' +
+'        }\n' +
+'        \n' +
+'        const historyRes = await fetch("/" + currentTab + "/history");\n' +
+'        const historyData = await historyRes.json();\n' +
+'        const tbody = document.getElementById("historyBody");\n' +
+'        if(historyData.history && historyData.history.length > 0) {\n' +
+'            tbody.innerHTML = historyData.history.slice(0, 30).map(h => {\n' +
+'                let statusClass = "", statusText = "";\n' +
+'                if(h.ket_qua_du_doan === "DUNG") { statusClass = "correct"; statusText = "CORRECT"; }\n' +
+'                else if(h.ket_qua_du_doan === "SAI") { statusClass = "wrong"; statusText = "WRONG"; }\n' +
+'                else { statusClass = "pending"; statusText = "PENDING"; }\n' +
+'                return \'<tr><td style="color:#00ffff;">#\' + h.Phien + \'</td><td class="\' + (h.Ket_qua === "Tài" ? "loss" : "win") + \'">\' + h.Ket_qua + \'</td><td class="\' + (h.Du_doan === "Tài" ? "loss" : "win") + \'">\' + h.Du_doan + \'</td><td style="color:#ffcc80;">\' + h.Do_tin_cay + \'</td><td><span class="method-tag">\' + (h.Phuong_phap || "AI") + \'</span></td><td class="\' + statusClass + \'">\' + statusText + \'</td></tr>\';\n' +
+'            }).join("");\n' +
+'        } else {\n' +
+'            tbody.innerHTML = \'<tr><td colspan="6" style="text-align:center;">NO DATA</td></tr>\';\n' +
+'        }\n' +
+'    } catch(e) { console.error(e); }\n' +
+'}\n' +
+'\n' +
+'function switchTab(tab) { currentTab = tab; document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active")); event.target.classList.add("active"); loadData(); }\n' +
+'async function refreshData() { await loadData(); }\n' +
+'loadData(); setInterval(loadData, 5000);\n' +
+'</script>\n' +
+'</body>\n' +
+'</html>';
   res.send(html);
 });
 
